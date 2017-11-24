@@ -87,6 +87,25 @@ function getStats(names, site, cb) {
     }
 }
 
-getStats(['views', 'followers', 'updates', 'yearsold'], 'palutena', function(stats) {
-    console.log(stats);
+function getBadges(site, cb) {
+    var neededStats = [];
+    allBadges.forEach(function(badge) {
+        badge.needs.forEach(function(stat) {
+            if (neededStats.indexOf(stat) == -1) neededStats.push(stat);
+        });
+    });
+    
+    getStats(neededStats, site, function(stats) {
+        var badges = [];
+        
+        allBadges.forEach(function(badge) {
+            if (eval(badge.condition)) badges.push(badge.name);
+        });
+        
+        cb(badges);
+    });
+}
+
+getBadges('project2', function(badges) {
+    console.log(badges);
 });

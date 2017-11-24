@@ -2,11 +2,13 @@
     {
         "name": "Birthday",
         "desc": "Have your site up for a whole year.",
-        "condition": "stats.yearsold > 1"
+        "needs": ["yearsold"],
+        "condition": "stats.yearsold >= 1"
     },
     {
-        "name": "Wizard",
-        "desc": "Follow yourself.",
-        "condition": "stats.followingSelf"
+        "name": "Popular",
+        "desc": "Reach 50 followers.",
+        "needs": ["followers"],
+        "condition": "stats.followers >= 50"
     }
 ]
