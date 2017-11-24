@@ -3,8 +3,7 @@ var cheerio = require('cheerio');
 var neocities = require('./neocities');
 
 var allBadges = require('../config/badges.json');
-
-var stats = [
+var allStats = [
     {
         name: 'views',
         url: 'https://neocities.org/api/info?sitename={{sitename}}',
@@ -28,6 +27,18 @@ var stats = [
         useData: function($) {
             return parseInt($('.stat').eq(2).text().replace(',', ''));
         }
+    }, 
+    {
+        name: 'yearsold',
+        url: 'https://neocities.org/api/info?sitename={{sitename}}',
+        type: 'json',
+        useData: function(data) {
+            var currentTime = new Date().getTime();
+            var creationTime = new Date(data.info.created_at).getTime();
+            
+            var millisecondsOld = currentTime - creationTime;
+            return ~~(millisecondsOld/(1000*60*60*24*365));
+        }
     }
 ];
 var siteCache = {};
@@ -42,19 +53,19 @@ function parseStatData(stat, data) {
     }
 }
 function getStat(name, site, cb) {
-    var stat = stats.find(function(element) {
+    var stat = allStats.find(function(element) {
         return element.name == name;
     });
     
     if (stat) {
         var url = stat.url.replace('{{sitename}}', site);
-        if (siteCache.url) {
-            cb(parseStatData(stat, siteCache.url));
+        if (siteCache[url]) {
+            cb(parseStatData(stat, siteCache[url]));
         } else {
             request(url, function(err, response, body) {
                 if (err) return console.log(err);
                 
-                siteCache.url = body;
+                siteCache[url] = body;
                 cb(parseStatData(stat, body));
             });
         }
@@ -62,7 +73,20 @@ function getStat(name, site, cb) {
         cb();
     }
 }
+function getStats(names, site, cb) {
+    if (names.length > 0) {
+        var name = names.shift();
+        getStats(names, site, function(stats) {
+            getStat(name, site, function(stat) {
+                stats[name] = stat;
+                cb(stats);
+            });
+        });
+    } else {
+        cb({});
+    }
+}
 
-getStat('views', 'project2', function(stat) {
-    console.log(stat);
+getStats(['views', 'followers', 'updates', 'yearsold'], 'palutena', function(stats) {
+    console.log(stats);
 });
