@@ -22,7 +22,7 @@ module.exports.uploadFile = function(name, path, cb) {
 		url: 'https://neocities.org/api/upload',
 		formData: formData,
 		headers: {
-			Authorization: 'Bearer '+process.env.NEOCITIES
+			Authorization: 'Bearer '+process.env.NEOCITIES_KEY
 		}
 	}, function(err, response, body) {
 		if (err) return console.log(err);
