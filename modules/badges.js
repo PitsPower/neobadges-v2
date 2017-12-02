@@ -88,6 +88,18 @@ function getStats(names, site, cb) {
 }
 
 function getBadges(site, cb) {
+    request('https://'+process.env.NEOCITIES_NAME+'.neocities.org/data/users.json', function(err, response, body) {
+        if (err) return console.log(err);
+        
+        var data = JSON.parse(body);
+        if (data.users[site]) {
+            cb(data.users[site].badges);
+        } else {
+            cb([]);
+        }
+    });
+}
+function findNewBadges(site, cb) {
     var neededStats = [];
     allBadges.forEach(function(badge) {
         badge.needs.forEach(function(stat) {
@@ -106,6 +118,6 @@ function getBadges(site, cb) {
     });
 }
 
-getBadges('project2', function(badges) {
+getBadges('palutena', function(badges) {
     console.log(badges);
 });
