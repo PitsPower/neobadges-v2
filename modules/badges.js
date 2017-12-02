@@ -100,24 +100,28 @@ function getBadges(site, cb) {
     });
 }
 function findNewBadges(site, cb) {
-    var neededStats = [];
-    allBadges.forEach(function(badge) {
-        badge.needs.forEach(function(stat) {
-            if (neededStats.indexOf(stat) == -1) neededStats.push(stat);
-        });
-    });
-    
-    getStats(neededStats, site, function(stats) {
-        var badges = [];
-        
+    getBadges(site, function(userBadges) {
+        var neededStats = [];
         allBadges.forEach(function(badge) {
-            if (eval(badge.condition)) badges.push(badge.name);
+            if (userBadges.indexOf(badge.name) == -1) {
+                badge.needs.forEach(function(stat) {
+                    if (neededStats.indexOf(stat) == -1) neededStats.push(stat);
+                });
+            }
         });
         
-        cb(badges);
+        getStats(neededStats, site, function(stats) {
+            var badges = [];
+            
+            allBadges.forEach(function(badge) {
+                if (eval(badge.condition)) badges.push(badge.name);
+            });
+            
+            cb(badges);
+        });
     });
 }
 
-getBadges('palutena', function(badges) {
+findNewBadges('project2', function(badges) {
     console.log(badges);
 });
