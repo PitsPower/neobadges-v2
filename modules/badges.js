@@ -39,17 +39,31 @@ var allStats = [
             var millisecondsOld = currentTime - creationTime;
             return ~~(millisecondsOld/(1000*60*60*24*365));
         }
+    }, 
+    {
+        name: 'saysneobadges',
+        url: 'https://neocities.org/site/{{sitename}}',
+        type: 'site',
+        useData: function($, site) {
+            var saysNeobadges = false;
+            $('.comment').each(function() {
+                if ($(this).find('.user').text() == site && $(this).find('.content').text().toLowerCase().indexOf('neobadges') > 0) {
+                    saysNeobadges = true;
+                }
+            });
+            return saysNeobadges;
+        }
     }
 ];
 var siteCache = {};
 
-function parseStatData(stat, data) {
+function parseStatData(stat, data, site) {
     if (stat.type == 'json') {
         var dataObj = JSON.parse(data);
         return stat.useData(dataObj);
     } else if (stat.type == 'site') {
         var $ = cheerio.load(data);
-        return stat.useData($);
+        return stat.useData($, site);
     }
 }
 function getStat(name, site, cb) {
@@ -60,13 +74,13 @@ function getStat(name, site, cb) {
     if (stat) {
         var url = stat.url.replace('{{sitename}}', site);
         if (siteCache[url]) {
-            cb(parseStatData(stat, siteCache[url]));
+            cb(parseStatData(stat, siteCache[url], site));
         } else {
             request(url, function(err, response, body) {
                 if (err) return console.log(err);
                 
                 siteCache[url] = body;
-                cb(parseStatData(stat, body));
+                cb(parseStatData(stat, body, site));
             });
         }
     } else {
@@ -122,6 +136,6 @@ function findNewBadges(site, cb) {
     });
 }
 
-findNewBadges('project2', function(badges) {
+getStats(['saysneobadges'], 'project2', function(badges) {
     console.log(badges);
 });
