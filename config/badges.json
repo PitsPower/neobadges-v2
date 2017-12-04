@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Birthday",
+        "desc": "Have your site up for a whole year.",
+        "needs": ["yearsold"],
+        "condition": "stats.yearsold >= 1"
+    },
+    {
+        "name": "Popular",
+        "desc": "Reach 50 followers.",
+        "needs": ["followers"],
+        "condition": "stats.followers >= 30"
+    }
+]
