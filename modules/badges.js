@@ -49,9 +49,33 @@ var allStats = [
             $('.comment').each(function() {
                 if ($(this).find('.user').text() == site && $(this).find('.content').text().toLowerCase().indexOf('neobadges') > 0) {
                     saysNeobadges = true;
+                    return false;
                 }
             });
             return saysNeobadges;
+        }
+    }, 
+    {
+        name: 'featured',
+        url: 'https://neocities.org/browse?sort_by=featured',
+        type: 'site',
+        useData: function($, site) {
+            var featured = false;
+            $('.username').each(function() {
+                if ($(this).text().trim() == site) {
+                    featured = true;
+                    return false;
+                }
+            });
+            return featured;
+        }
+    }, 
+    {
+        name: 'wizard',
+        url: 'https://neocities.org/site/{{sitename}}',
+        type: 'site',
+        useData: function($, site) {
+            return $('.follower-list').find('a[href="/site/'+site+'"]').length > 0;
         }
     }
 ];
@@ -115,6 +139,7 @@ function getBadges(site, cb) {
 }
 function findNewBadges(site, cb) {
     getBadges(site, function(userBadges) {
+        console.log(userBadges);
         var neededStats = [];
         allBadges.forEach(function(badge) {
             if (userBadges.indexOf(badge.name) == -1) {
@@ -128,7 +153,7 @@ function findNewBadges(site, cb) {
             var badges = [];
             
             allBadges.forEach(function(badge) {
-                if (eval(badge.condition)) badges.push(badge.name);
+                if (eval(badge.condition) && userBadges.indexOf(badge.name) == -1) badges.push(badge.name);
             });
             
             if (badges.length > 0) {
@@ -148,6 +173,6 @@ function findNewBadges(site, cb) {
     });
 }
 
-findNewBadges('palutena', function(badges) {
+findNewBadges('project2', function(badges) {
     console.log(badges);
 });

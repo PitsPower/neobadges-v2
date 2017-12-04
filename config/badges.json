@@ -6,8 +6,32 @@
         "condition": "stats.yearsold >= 1"
     },
     {
+        "name": "Experienced",
+        "desc": "Have your website up for 5 years.",
+        "needs": ["yearsold"],
+        "condition": "stats.yearsold >= 5"
+    },
+    {
+        "name": "Grandpa",
+        "desc": "Have your site up for a 10 years.",
+        "needs": ["yearsold"],
+        "condition": "stats.yearsold >= 10"
+    },
+    {
+        "name": "Noticed",
+        "desc": "Get featured.",
+        "needs": ["featured"],
+        "condition": "stats.featured"
+    },
+    {
+        "name": "Wizard",
+        "desc": "Follow yourself.",
+        "needs": ["wizard"],
+        "condition": "stats.wizard"
+    },
+    {
         "name": "Popular",
-        "desc": "Reach 50 followers.",
+        "desc": "Reach 30 followers.",
         "needs": ["followers"],
         "condition": "stats.followers >= 30"
     }
