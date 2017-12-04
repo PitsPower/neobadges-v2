@@ -9,6 +9,6 @@
         "name": "Popular",
         "desc": "Reach 50 followers.",
         "needs": ["followers"],
-        "condition": "stats.followers >= 50"
+        "condition": "stats.followers >= 30"
     }
 ]

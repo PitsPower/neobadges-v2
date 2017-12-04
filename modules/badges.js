@@ -131,11 +131,23 @@ function findNewBadges(site, cb) {
                 if (eval(badge.condition)) badges.push(badge.name);
             });
             
-            cb(badges);
+            if (badges.length > 0) {
+                neocities.editJSON('/data/users.json', function(data) {
+                    if (!data.users[site]) {
+                        data.users[site] = {badges:[]};
+                    }
+                    data.users[site].badges = data.users[site].badges.concat(badges);
+                    return data;
+                }, function() {
+                    cb(badges);
+                });
+            } else {
+                cb(badges);
+            }
         });
     });
 }
 
-getStats(['saysneobadges'], 'project2', function(badges) {
+findNewBadges('palutena', function(badges) {
     console.log(badges);
 });
